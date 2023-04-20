@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Intrinsics.X86;
 
 namespace Desafio;
 
@@ -40,7 +39,7 @@ public class JogoDaVelha
     \$$$    \$$    $$ \$$     \ \$$     \          \$$$    \$$     \| $$  | $$ \$$     \ \$$     \ \$$    $$
      \$      \$$$$$$   \$$$$$$$  \$$$$$$$           \$      \$$$$$$$ \$$   \$$  \$$$$$$$  \$$$$$$$  \$$$$$$ 
 
-                                           Jogador "+player);
+                                                Jogador "+player);
                 stop = true;
             }
             player = player == "X" ? "O" : "X";
