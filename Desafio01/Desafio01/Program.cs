@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 
 namespace Desafio;
 
@@ -6,7 +7,91 @@ public class JogoDaVelha
 {
     public static void Main(String[] args)
     {
-        playing();
+        while (true)
+        {
+            Console.WriteLine("Deseja jogar: ");
+            Console.WriteLine("1 - Jogador x Maquina");
+            Console.WriteLine("2 - Jogador x Jogador");
+            string decisao = Console.ReadLine();
+            if (decisao == "1")
+            {
+                Console.Clear();
+                playingMachine();
+                break;
+            } else if(decisao == "2"){
+                Console.Clear();
+                playing();
+                break;
+            } else
+            {
+                Console.WriteLine("Opcao invalida");
+            }
+        }
+    }
+
+    public static void playingMachine()
+    {
+        string[,] tictactoe = tabuleiro();
+        string player = "X";
+        string machine = "O";
+        int jogadas = 0;
+
+        while (true)
+        {
+            printTabuleiro(tictactoe);
+            Console.Write("Jogador: " + player + " insira a sua jogada: ");
+            string posicao = Console.ReadLine();
+
+            // jogada do player
+            jogada(tictactoe, posicao, player);
+            Console.Clear();
+            if (venceu(tictactoe, player))
+            {
+                Console.WriteLine(@"
+ __     __                                                                                                  
+|  \   |  \                                                                                                 
+| $$   | $$  ______    _______   ______         __     __   ______   _______    _______   ______   __    __ 
+| $$   | $$ /      \  /       \ /      \       |  \   /  \ /      \ |       \  /       \ /      \ |  \  |  \
+ \$$\ /  $$|  $$$$$$\|  $$$$$$$|  $$$$$$\       \$$\ /  $$|  $$$$$$\| $$$$$$$\|  $$$$$$$|  $$$$$$\| $$  | $$
+  \$$\  $$ | $$  | $$| $$      | $$    $$        \$$\  $$ | $$    $$| $$  | $$| $$      | $$    $$| $$  | $$
+   \$$ $$  | $$__/ $$| $$_____ | $$$$$$$$         \$$ $$  | $$$$$$$$| $$  | $$| $$_____ | $$$$$$$$| $$__/ $$
+    \$$$    \$$    $$ \$$     \ \$$     \          \$$$    \$$     \| $$  | $$ \$$     \ \$$     \ \$$    $$
+     \$      \$$$$$$   \$$$$$$$  \$$$$$$$           \$      \$$$$$$$ \$$   \$$  \$$$$$$$  \$$$$$$$  \$$$$$$ 
+
+                                                Jogador " + player);
+                break;
+            }
+
+            // jogada da maquina
+            machinePlayer(tictactoe, machine);
+
+            if (venceu(tictactoe, machine))
+            {
+                Console.WriteLine(@"
+ __     __                                                                          __                     
+|  \   |  \                                                                        |  \                    
+| $$   | $$  ______    _______   ______          ______    ______    ______    ____| $$  ______   __    __ 
+| $$   | $$ /      \  /       \ /      \        /      \  /      \  /      \  /      $$ /      \ |  \  |  \
+ \$$\ /  $$|  $$$$$$\|  $$$$$$$|  $$$$$$\      |  $$$$$$\|  $$$$$$\|  $$$$$$\|  $$$$$$$|  $$$$$$\| $$  | $$
+  \$$\  $$ | $$  | $$| $$      | $$    $$      | $$  | $$| $$    $$| $$   \$$| $$  | $$| $$    $$| $$  | $$
+   \$$ $$  | $$__/ $$| $$_____ | $$$$$$$$      | $$__/ $$| $$$$$$$$| $$      | $$__| $$| $$$$$$$$| $$__/ $$
+    \$$$    \$$    $$ \$$     \ \$$     \      | $$    $$ \$$     \| $$       \$$    $$ \$$     \ \$$    $$
+     \$      \$$$$$$   \$$$$$$$  \$$$$$$$      | $$$$$$$   \$$$$$$$ \$$        \$$$$$$$  \$$$$$$$  \$$$$$$ 
+                                               | $$                                                        
+                                               | $$                                                        
+                                                \$$ 
+
+                                                Para a maquina" );
+                break;
+            }
+            
+            // verificando empate
+            jogadas += 2;
+            if(jogadas == 9)
+            {
+
+            }
+        }
     }
 
     public static void playing()
@@ -14,6 +99,7 @@ public class JogoDaVelha
         string[,] jogoDaVelha = tabuleiro();
         bool stop = false;
         string player = "X";
+        int jogadas = 0;
 
 
         while (!stop)
@@ -43,6 +129,13 @@ public class JogoDaVelha
                 stop = true;
             }
             player = player == "X" ? "O" : "X";
+            
+            // em caso de empate
+            jogadas++;
+            if (jogadas == 9)
+            {
+
+            }
         }
     }
 
@@ -113,12 +206,8 @@ public class JogoDaVelha
     {
         for (int i = 0; i < tabuleiro.GetLength(0); i++)
         {
-            for (int j = 0; j < tabuleiro.GetLength(1); j++)
-            {
-                if (i==j && tabuleiro[i, j] != player)
-                    return false;
-            }
-
+            if (tabuleiro[i, i] != player)
+                return false;
         }
         return true;
     }
@@ -155,4 +244,140 @@ public class JogoDaVelha
         }
         return false;
     }
+
+    public static void machinePlayer(string[,] tabuleiro, string player)
+    {
+        if (tabuleiro[1, 1] == "5")
+        {
+            jogada(tabuleiro, "5", player);
+            return;
+        }
+
+        machineWinLineMove(tabuleiro,player);
+
+        machineWinColunmMove(tabuleiro, player);
+
+        machineWinDiagonalMove(tabuleiro, player);
+
+        machineWinReverseDiagonalMove(tabuleiro, player);
+
+        Random random = new Random();
+        int row, col;
+        string jogadaAtual;
+        do
+        {
+            row = random.Next(3);
+            col = random.Next(3);
+            jogadaAtual = tabuleiro[row, col];
+        } while (!(jogadaAtual != "X" && jogadaAtual != "O"));
+        jogada(tabuleiro, jogadaAtual, player);
+        return;
+
+    }
+
+    public static void machineWinLineMove(string[,] tabuleiro, string player)
+    {
+        for (int i = 0; i < tabuleiro.GetLength(0); i++)
+        {
+            int count = 0;
+            string emptyIndex = "";
+
+            for (int j = 0; j < tabuleiro.GetLength(1); j++)
+            {
+                if (tabuleiro[i, j] == player)
+                {
+                    count++;
+                }
+                else if (tabuleiro[i, j] != "X" && tabuleiro[i, j] != "O")
+                {
+                    emptyIndex = tabuleiro[i, j];
+                }
+            }
+
+            if (count == 2 && emptyIndex != "")
+            {
+                jogada(tabuleiro, emptyIndex, player);
+            }
+        }
+    }
+
+    public static void machineWinColunmMove(string[,] tabuleiro, string player)
+    {
+        for (int j = 0; j < tabuleiro.GetLength(1); j++)
+        {
+            int count = 0;
+            string emptyIndex = "";
+
+            for (int i = 0; i < tabuleiro.GetLength(0); i++)
+            {
+                if (tabuleiro[i, j] == player)
+                {
+                    count++;
+                }
+                else if (tabuleiro[i, j] != "X" && tabuleiro[i, j] != "O")
+                {
+                    emptyIndex = tabuleiro[i, j];
+                }
+            }
+
+            if (count == 2 && emptyIndex != "")
+            {
+                jogada(tabuleiro, emptyIndex, player);
+                return;
+            }
+        }
+
+    }
+
+
+    public static void machineWinDiagonalMove(string[,] tabuleiro, string player)
+    {
+        int count = 0;
+        string emptyIndex = "";
+
+        for (int i = 0; i < tabuleiro.GetLength(0); i++)
+        {
+            if (tabuleiro[i, i] == player)
+            {
+                count++;
+            }
+            else if (tabuleiro[i, i] != "X" && tabuleiro[i, i] != "O")
+            {
+                emptyIndex = tabuleiro[i, i];
+            }
+        }
+
+        if (count == 2 && emptyIndex != "")
+        {
+            jogada(tabuleiro, emptyIndex, player);
+            return;
+        }
+
+    }
+
+    public static void machineWinReverseDiagonalMove(string[,] tabuleiro, string player)
+    {
+        int count = 0;
+        string emptyIndex = "";
+
+        for (int i = 0, j = tabuleiro.GetLength(1) - 1; i < tabuleiro.GetLength(0); i++, j--)
+        {
+            if (tabuleiro[i, j] == player)
+            {
+                count++;
+            }
+            else if (tabuleiro[i, j] != "X" && tabuleiro[i, j] != "O")
+            {
+                emptyIndex = tabuleiro[i, j];
+            }
+        }
+
+        if (count == 2 && emptyIndex != "")
+        {
+            jogada(tabuleiro, emptyIndex, player);
+            return;
+        }
+    }
 }
+
+
