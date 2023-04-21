@@ -261,6 +261,7 @@ public class JogoDaVelha
 
         machineWinReverseDiagonalMove(tabuleiro, player);
 
+        // movimento aleatorio se n'ao tiver jogada ganha
         Random random = new Random();
         int row, col;
         string jogadaAtual;
