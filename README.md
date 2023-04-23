@@ -14,12 +14,14 @@ O jogo solicitará que você escolha entre as opções "Jogador x Maquina" ou "J
 A ideia era imitar o teclado numérico do teclado do jogador.
 
 Exemplo:
+```
+   7 | 8 | 9   
+  ---+---+---
+   4 | 5 | 6  
+  ---+---+---
+   1 | 2 | 3  
 
-   7 | 8 | 9
-  ---+---+---
-   4 | 5 | 6
-  ---+---+---
-   1 | 2 | 3
+```
 
 Se você escolheu jogar contra a máquina, você jogará como "X" e a máquina jogará como "O". Se você escolheu jogar multiplayer, o primeiro jogador jogará como "X" e o segundo jogador jogará como "O".
 
